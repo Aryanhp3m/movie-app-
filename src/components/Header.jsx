@@ -14,7 +14,7 @@ function Header() {
   
           <input type="text" placeholder="Search movies..." />
   
-          <p>2 + 2 = {2 + 2}</p>
+          {/* <p>2 + 2 = {2 + 2}</p> */}
   
           <span>{isLoggedIn ? 'Welcome!' : 'Login'}</span>
         </header>
