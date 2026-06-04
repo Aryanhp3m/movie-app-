@@ -1,4 +1,4 @@
-function Header() {
+function Header({searchQuery, setSearchQuery}) {
     const isLoggedIn = false;
     const appName = 'Movie App';
   
@@ -12,7 +12,11 @@ function Header() {
             <a href="/movies">Movies</a>
           </nav>
   
-          <input type="text" placeholder="Search movies..." />
+          <input type='text'
+          placeholder='search movies'
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+      />
   
           {/* <p>2 + 2 = {2 + 2}</p> */}
   

@@ -38,3 +38,22 @@
     gap: 20px;
     padding: 20px;
   }
+
+  .badge {
+    display: inline-block;
+    margin-right: 8px;
+    margin-top: 8px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background-color: #eeeeee;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .movie-list {
+    display: flex;
+    gap: 20px;
+    padding: 24px;
+    flex-wrap: wrap;
+  }
