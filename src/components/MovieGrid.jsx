@@ -9,24 +9,21 @@ import MovieCard from './MovieCard';
 //     return <input value={text} onChange={e => setText(e.target.value)} />;
 //   }
 
-function MovieGrid({ movies, favourites, onToggleFavourite  }) {
+function MovieGrid({ movies}) {
 
-
-
-    return (
+  return (
         <>
-    
-
-        <div className="movie-list">
+       <div className="movie-list">
       {movies.map((movie) => (
         <MovieCard
           key={movie.id}
+          movie={movie}
           title={movie.title}
           posterUrl={movie.posterUrl}
           rating={movie.rating}
-          genre={movie.genre}
-          isFavourite={favourites.has(movie.id)}
-          onToggleFavourite={() => onToggleFavourite(movie.id)}
+          genre={movie.genre} 
+          // isFavourite={favourites.has(movie.id)}
+          // onToggleFavourite={() => onToggleFavourite(movie.id)}
         />
       ))}
     </div>

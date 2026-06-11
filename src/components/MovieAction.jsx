@@ -10,5 +10,4 @@ function MovieActions({ isFavourite, onToggleFavourite }) {
   );
 }
 
-
 export default MovieActions;

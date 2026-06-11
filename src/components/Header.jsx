@@ -1,6 +1,19 @@
+import { useContext } from "react";
+import { ThemeContext } from "../contexts/ThemeContext";
+import { NavLink,useNavigate } from "react-router-dom";
+
 function Header({searchQuery, setSearchQuery}) {
-    const isLoggedIn = false;
+    // const isLoggedIn = false;
     const appName = 'Movie App';
+    const {theme, toggleTheme} = useContext(ThemeContext)
+
+    const navigate = useNavigate();
+    const isLoggedIn = Boolean(localStorage.getItem("token"));
+
+function handleLogout() {
+  localStorage.removeItem("token");
+  navigate("/login");
+}
   
     return (
       <>
@@ -8,8 +21,8 @@ function Header({searchQuery, setSearchQuery}) {
           <h1>{appName}</h1>
   
           <nav>
-            <a href="/">Home</a>
-            <a href="/movies">Movies</a>
+          <NavLink to="/">Home</NavLink>
+          <NavLink to="/favourites">Favourites</NavLink>
           </nav>
   
           <input type='text'
@@ -20,8 +33,14 @@ function Header({searchQuery, setSearchQuery}) {
   
           {/* <p>2 + 2 = {2 + 2}</p> */}
   
-          <span>{isLoggedIn ? 'Welcome!' : 'Login'}</span>
-        </header>
+          <button onClick={handleLogout}>
+          {isLoggedIn ? "Logout" : "Login"}
+         </button>
+
+          <button onClick={toggleTheme}>
+           Switch to {theme === 'light' ? 'dark' : 'light'} theme
+           </button>
+         </header>
       </>
     );
   }

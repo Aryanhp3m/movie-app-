@@ -1,6 +1,6 @@
 import MovieGrid from "./MovieGrid";
 
-function MovieSection({ movies, favourites, onToggleFavourite }) {
+function MovieSection({ movies}) {
     return (
         <section>
 
@@ -8,8 +8,6 @@ function MovieSection({ movies, favourites, onToggleFavourite }) {
 
             <MovieGrid  
             movies={movies}
-            favourites={favourites}
-            onToggleFavourite={onToggleFavourite}
              />
 
         </section>

@@ -1,13 +1,21 @@
-import { useState } from 'react';
+import { useContext} from 'react';
 import './MovieCard.css';
 import PropTypes from "prop-types";
 import Badge from './Badge';
 import MovieActions from './MovieAction';
+import { Link } from 'react-router-dom';
+import { FavouritesContext } from '../contexts/FavouritesContext';
+
 // import FavouriteButton from './FavouriteButton';
 
 
-function MovieCard({ title, posterUrl, rating, genre, isFavourite, onToggleFavourite}) {
-    const [liked, setLiked] = useState(false);
+function MovieCard({ title, posterUrl, rating, genre, movie}) {
+    // const [liked, setLiked] = useState(false);
+
+    const { favourites, toggleFavourite } = useContext(FavouritesContext)
+    const isFavourite = favourites.some(
+        (favourite) => favourite.id === movie.id
+      );
 
     // console.log(typeof rating, rating);
 
@@ -24,27 +32,35 @@ function MovieCard({ title, posterUrl, rating, genre, isFavourite, onToggleFavou
                     <Badge>{rating}★</Badge>
                 </div>
 
-                <button onClick={() => setLiked((value) => !value)}>
+                {/* <button onClick={() => setLiked((value) => !value)}>
                     {liked ? "Liked" : "Like"}
-                </button>
+                </button> */}
 
                {/* <FavouriteButton 
                isFavourite={isFavourite}
                onToggleFavourite={onToggleFavourite}
                /> */}
 
+               <Link to={`/movie/${movie.id}`}>
+               
+                <article>
+                <h2>{movie.title}</h2>
+                </article>
+               
+               </Link>
+                
 
 
 
                 <MovieActions 
                 isFavourite={isFavourite}
-                onToggleFavourite={onToggleFavourite}
+                onToggleFavourite={() => toggleFavourite(movie)}
                 />
 
 
                 {/* <button onClick={onToggleFavourite}>
-          {isFavourite ? '❤️ Remove Favourite' : '♡ Add Favourite'}
-        </button> */}
+                {isFavourite ? '❤️ Remove Favourite' : '♡ Add Favourite'}
+                </button> */}
 
         
             </div>
