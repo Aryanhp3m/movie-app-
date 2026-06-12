@@ -1,19 +1,23 @@
-import { useContext } from "react";
-import { ThemeContext } from "../contexts/ThemeContext";
+// import { useContext } from "react";
+// import { ThemeContext } from "../contexts/ThemeContext";
 import { NavLink,useNavigate } from "react-router-dom";
+import { useTheme } from "../hooks/useTheme";
 
 function Header({searchQuery, setSearchQuery}) {
     // const isLoggedIn = false;
     const appName = 'Movie App';
-    const {theme, toggleTheme} = useContext(ThemeContext)
+    // const {theme, toggleTheme} = useContext(ThemeContext)
+
+    const {theme, toggleTheme} = useTheme()
+    
 
     const navigate = useNavigate();
     const isLoggedIn = Boolean(localStorage.getItem("token"));
 
-function handleLogout() {
-  localStorage.removeItem("token");
-  navigate("/login");
-}
+    function handleLogout() {
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
   
     return (
       <>

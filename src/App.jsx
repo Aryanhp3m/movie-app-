@@ -11,10 +11,11 @@ import FavouritesPage from './pages/FavouritesPage';
 import NotFoundPage from './pages/NotFoundPage';
 import LoginPage from './pages/LoginPage';
 import Protectedroute from './components/ProtectedRoute';
-import { useContext } from 'react';
-import { ThemeContext } from "./contexts/ThemeContext";
+// import { useContext } from 'react';
+// import { ThemeContext } from "./contexts/ThemeContext";
 import AuthLayout from './layouts/AuthLayout';
 import MainLayout from './layouts/MainLayout';
+import { useTheme } from './hooks/useTheme';
 
 
 
@@ -71,7 +72,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   console.log(movies);
-  const { theme } = useContext(ThemeContext);
+  // const { theme } = useContext(ThemeContext);
+  const {theme} = useTheme();
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
   // const [favourites, setFavourites] = useState(new Set());
