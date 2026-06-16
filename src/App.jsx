@@ -1,7 +1,7 @@
 import './App.css';
-import { useState, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
-import Header from './components/Header';
+import { useState } from 'react';
+import { Routes, Route,} from 'react-router-dom';
+// import Header from './components/Header';
 // import MovieCard from './components/MovieCard';
 // import MovieGrid from './components/MovieGrid';
 // import MovieSection from './components/MovieSection';
@@ -16,6 +16,8 @@ import Protectedroute from './components/ProtectedRoute';
 import AuthLayout from './layouts/AuthLayout';
 import MainLayout from './layouts/MainLayout';
 import { useTheme } from './hooks/useTheme';
+import useFetch from './hooks/useFetch';
+import useDebounce from './hooks/useDebounce';
 
 
 
@@ -68,15 +70,38 @@ import { useTheme } from './hooks/useTheme';
 function App() {
 
   const [searchQuery, setSearchQuery] = useState('')
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  console.log(movies);
+  const debouncedQuery = useDebounce(searchQuery, 500);
+  // const [movies, setMovies] = useState([]);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
+  // console.log(movies);
   // const { theme } = useContext(ThemeContext);
-  const {theme} = useTheme();
-  const location = useLocation();
-  const isLoginPage = location.pathname === "/login";
+  const { theme } = useTheme();
+  // const location = useLocation();
+  // const isLoginPage = location.pathname === "/login";
   // const [favourites, setFavourites] = useState(new Set());
+
+  const apiKey = "57fafb319673fc13e2880336c840afb2";
+
+  const url = debouncedQuery.trim()
+    ? `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(debouncedQuery)}`
+    : `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`;
+
+  const { data, loading, error } = useFetch(url);
+
+
+  const movies = (data?.results ?? []).map((movie) => ({
+    id: movie.id,
+    title: movie.title,
+    rating: movie.vote_average,
+    genre: movie.release_date,
+    posterUrl: movie.poster_path
+      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+      : "https://via.placeholder.com/500x750?text=No+Poster",
+  }));
+
+
+
 
 
   // const filteredMovies = movies.filter(m =>
@@ -85,95 +110,100 @@ function App() {
 
 
 
-      function removeFirstMovie() {
-        if (movies.length === 0) return;    
-        console.log('Deleted movie id:', movies[0].id);
-        console.log('Deleted movie title:', movies[0].title);
-        setMovies(movies.slice(1));
-    }
+  //   function removeFirstMovie() {
+  //     if (movies.length === 0) return;    
+  //     console.log('Deleted movie id:', movies[0].id);
+  //     console.log('Deleted movie title:', movies[0].title);
+  //     setMovies(movies.slice(1));
+  // }
 
 
 
-      // const toggleFavourite = (movieId) => {
-      //     const newFavourites = new Set(favourites);
-        
-      //     if (newFavourites.has(movieId)) {
-      //       newFavourites.delete(movieId);
-      //     } else {
-      //       newFavourites.add(movieId);
-      //     }
-        
-      //     setFavourites(newFavourites);
-      //   };
 
 
-        useEffect(() => {
-          const controller = new AbortController();
-        
-          const timer = setTimeout(async () => {
-          const apicall = async() => {
-            try {
-              setLoading(true);
-              setError(null);
-        
-              const apiKey = '57fafb319673fc13e2880336c840afb2';
-        
-              const url = searchQuery.trim()
-                ? `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(searchQuery)}`
-                : `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`;
-        
-              const response = await fetch(url, {
-                signal: controller.signal,
-              });
-        
-              if (!response.ok) {
-                throw new Error('Failed to fetch movies');
-              }
-        
-              const data = await response.json();
-        
-              const formattedMovies = data.results.map((movie) => ({
-                id: movie.id,
-                title: movie.title,
-                rating: movie.vote_average,
-                genre: movie.release_date,
-                posterUrl: movie.poster_path
-                  ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                  : 'https://via.placeholder.com/500x750?text=No+Poster',
-              }));
-        
-              setMovies(formattedMovies);
-            } catch (err) {
-              if (err.name !== 'AbortError') {
-                setError(err.message);
-              }
-            } finally {
-              setLoading(false);
-            }
-          }  
-          apicall();
-          }, 500);
-        
-          return () => {
-            clearTimeout(timer);
-            controller.abort();
-          };
-        }, [searchQuery]);
 
 
-  
+
+  // const toggleFavourite = (movieId) => {
+  //     const newFavourites = new Set(favourites);
+
+  //     if (newFavourites.has(movieId)) {
+  //       newFavourites.delete(movieId);
+  //     } else {
+  //       newFavourites.add(movieId);
+  //     }
+
+  //     setFavourites(newFavourites);
+  //   };
+
+
+  // useEffect(() => {
+  //   const controller = new AbortController();
+
+  //   const timer = setTimeout(async () => {
+  //   const apicall = async() => {
+  //     try {
+  //       setLoading(true);
+  //       setError(null);
+
+  //       const apiKey = '57fafb319673fc13e2880336c840afb2';
+
+  //       const url = searchQuery.trim()
+  //         ? `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(searchQuery)}`
+  //         : `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`;
+
+  //       const response = await fetch(url, {
+  //         signal: controller.signal,
+  //       });
+
+  //       if (!response.ok) {
+  //         throw new Error('Failed to fetch movies');
+  //       }
+
+  //       const data = await response.json();
+
+  //       const formattedMovies = data.results.map((movie) => ({
+  //         id: movie.id,
+  //         title: movie.title,
+  //         rating: movie.vote_average,
+  //         genre: movie.release_date,
+  //         posterUrl: movie.poster_path
+  //           ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+  //           : 'https://via.placeholder.com/500x750?text=No+Poster',
+  //       }));
+
+  //       setMovies(formattedMovies);
+  //     } catch (err) {
+  //       if (err.name !== 'AbortError') {
+  //         setError(err.message);
+  //       }
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }  
+  //   apicall();
+  //   }, 500);
+
+  //   return () => {
+  //     clearTimeout(timer);
+  //     controller.abort();
+  //   };
+  // }, [searchQuery]);
+
+
+
   return (
 
-     <div className={theme}>
-      {!isLoginPage && (
+    <div className={theme}>
+      {/* {!isLoginPage && (
         <>
-    <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
-    <button onClick={removeFirstMovie}>Remove First Movie</button>
-    </>
-  )}
+          <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          <button onClick={removeFirstMovie}>Remove First Movie</button>
+        </>
+      )} */}
 
-    <div className="movie-list">
-      {/* <MovieCard
+      <div>
+        {/* <MovieCard
         title="Avengers"
         posterUrl="https://gratisography.com/wp-content/uploads/2025/05/gratisography-moon-robot-1035x780.jpg"
         rating={8.5}
@@ -191,7 +221,7 @@ function App() {
         rating={9.5}
         genre="sci-fi"
       /> */}
-{/* 
+        {/* 
       <MovieGrid searchQuery={searchQuery} 
         movies={filteredMovies}
         favourites={favourites}
@@ -199,36 +229,43 @@ function App() {
       
       /> */}
 
-  {/* {loading && <div className="spinner">Loading movies...</div>} */}
+        {/* {loading && <div className="spinner">Loading movies...</div>} */}
 
-  {/* {error && <p className="error-message">{error}</p>} */}
+        {/* {error && <p className="error-message">{error}</p>} */}
 
-  {/* {!loading && !error && (
+        {/* {!loading && !error && (
 
   // <MovieSection
     
   // />
   
 )} */}
-     </div>
+      </div>
 
-     <Routes >
-      
-      {/* <Route path='/movie/:id' element={<MovieDetail/>}></Route> */}
-      <Route path="*" element={<NotFoundPage/>} />
-      <Route element={<AuthLayout />}>
-     <Route path="/login" element={<LoginPage />} />
-     </Route>
-      <Route element={<Protectedroute/>}>
-      <Route element={<MainLayout searchQuery={searchQuery} setSearchQuery={setSearchQuery}></MainLayout>}></Route>
-      <Route path='/favourites' element={<FavouritesPage/>}></Route>
-      <Route path='/' element={<HomePage movies={movies} error={error} loading={loading}/>}></Route>
-      <Route path='/movie/:id' element={<MovieDetail/>}></Route>
-     </Route>
-    
-     </Routes>
-  
-     </div>
+      <Routes>
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<LoginPage />} />
+        </Route>
+
+        <Route element={<Protectedroute />}>
+          <Route
+            element={
+              <MainLayout
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+              />
+            }
+          >
+            <Route path="/" element={<HomePage movies={movies} error={error} loading={loading} />} />
+            <Route path="/favourites" element={<FavouritesPage />} />
+            <Route path="/movie/:id" element={<MovieDetail />} />
+          </Route>
+        </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+
+    </div>
   );
 }
 
